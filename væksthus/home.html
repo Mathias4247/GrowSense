@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}
+Home
+{% endblock %}
+{% block content %}
+<p>Home page</p>
+Latest image here:
+<br>
+{% if image %}
+<img src="{{ url_for('static', filename='img/' + image) }}" width="300">
+{% else %}
+<p>No image yet</p>
+{% endif %}
+<br>
+<button><a href="{{url_for('take_photo')}}">Take photo</a></button>
+{% endblock %}
