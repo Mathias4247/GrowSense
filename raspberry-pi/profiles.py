@@ -20,7 +20,7 @@ PLANT_PROFILES = {
     },
     "tallerkensmækker": {
         "navn": "Tallerkensmækker",
-        "soil_min": 45,
+        "soil_min": 50,
         "soil_max": 65,
         "lys_timer": 16,
         "vaekst_dage": 80,
@@ -29,7 +29,7 @@ PLANT_PROFILES = {
     "mynte": {
         "navn": "Mynte",
         "soil_min": 55,
-        "soil_max": 75,
+        "soil_max": 70,
         "lys_timer": 14,
         "vaekst_dage": 60,
         "beskrivelse": "Aromatisk krydderurt, trives i fugtig jord og moderat til kraftigt lys. 15-24 grader."

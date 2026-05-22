@@ -1,26 +1,29 @@
 import sensor_reader
 
-# Alle aktuatorer (pumpe + LED) sidder på ESP'en og styres via UART.
-# Dette modul holder kun den senest sendte tilstand til visning i Flask.
 _tilstand = {
-    "pumpe":     False,
+    "pumpe":    False,
     "lysprofil": "standard",
+    "soil_min":  50,
+    "soil_max":  70,
 }
 
 
 def set_pumpe(state: bool):
-    """Manuel pumpe-styring -> ESP."""
     _tilstand["pumpe"] = state
     sensor_reader.send("indstil:pumpe={}".format("TIL" if state else "FRA"))
 
 
-def set_profil(soil_min: int, soil_max: int):
-    """Planteprofilens fugt-grænser -> ESP (automatisk justering)."""
-    sensor_reader.send("indstil:soil_min={},soil_max={}".format(soil_min, soil_max))
+def set_profil(soil_min: int, soil_max: int, lysprofil: str = "standard"):
+    """Sender profilgrænser + lysprofil til ESP32."""
+    _tilstand["soil_min"]  = soil_min
+    _tilstand["soil_max"]  = soil_max
+    _tilstand["lysprofil"] = lysprofil
+    sensor_reader.send("indstil:soil_min={},soil_max={},lysprofil={}".format(
+        soil_min, soil_max, lysprofil
+    ))
 
 
 def set_lysprofil(navn: str):
-    """Lysprofil-knap (seedling/standard) -> ESP."""
     if navn in ("seedling", "standard"):
         _tilstand["lysprofil"] = navn
         sensor_reader.send("indstil:lysprofil={}".format(navn))

@@ -8,6 +8,13 @@ app = Flask(__name__)
 sensor_reader.start()
 aktiv_profil_key = "basilikum"
 
+def _send_opstart_profil():
+    time.sleep(3)  # vent til serial er klar
+    p = PLANT_PROFILES[aktiv_profil_key]
+    actuators.set_profil(p["soil_min"], p["soil_max"])
+
+threading.Thread(target=_send_opstart_profil, daemon=True).start()
+
 def automatisk_analyse():
     print("Automatisk analyse køres...")
     tag_billede_og_analyser()
@@ -65,7 +72,11 @@ def profiler():
         if valgt in PLANT_PROFILES:
             aktiv_profil_key = valgt
             profil = PLANT_PROFILES[aktiv_profil_key]
-            actuators.set_profil(profil["soil_min"], profil["soil_max"])
+            actuators.set_profil(
+                profil["soil_min"],
+                profil["soil_max"],
+                profil.get("lysprofil", "standard")
+            )
         return redirect(url_for("profiler"))
     return render_template("profiles.html", profiler=PLANT_PROFILES, aktiv=aktiv_profil_key)
 
@@ -82,4 +93,4 @@ def galleri():
     return render_template("gallery.html", billeder=billeder)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, use_reloader=False)
