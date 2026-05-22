@@ -39,7 +39,6 @@ def _gem_til_csv(data: dict):
 
 def _laes_serial():
     global _ser
-    taeller = 0
     try:
         _ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=2)
         print(f"Forbundet til ESP32 på {SERIAL_PORT}")
@@ -62,9 +61,7 @@ def _laes_serial():
                     elif key == "lysprofil": sensor_data["lysprofil"] = val
                     elif key == "led":       sensor_data["led"] = int(float(val))
                 sensor_data["timestamp"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-                taeller += 1
-                if taeller % 10 == 0:
-                    _gem_til_csv(sensor_data.copy())
+                _gem_til_csv(sensor_data.copy())
             except Exception:
                 pass
     except Exception as e:

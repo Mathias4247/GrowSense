@@ -32,10 +32,15 @@ def hjem():
 def api_data():
     return jsonify(sensor_reader.get_data())
 
+@app.route("/api/grafer")
+def api_grafer():
+    historik = sensor_reader.get_historik(60)
+    return jsonify(graphs.lav_alle_grafer(historik))
+
 @app.route("/sensorer")
 def sensorer():
     data     = sensor_reader.get_data()
-    historik = sensor_reader.get_historik(30)
+    historik = sensor_reader.get_historik(60)
     grafer   = graphs.lav_alle_grafer(historik)
     return render_template("sensors.html", data=data, grafer=grafer)
 
