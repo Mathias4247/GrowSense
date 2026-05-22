@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Manuel styring{% endblock %}
+
+{% block content %}
+<h2>Manuel styring</h2>
+<p class="text-muted">Her kan du manuelt styre pumpe og LED-lys uafhængigt af automatik.</p>
+
+<!-- Pumpe -->
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Vandpumpe</h5>
+        <p>Nuværende tilstand:
+            {% if tilstand.pumpe %}
+                <span class="badge bg-primary fs-6">TIL</span>
+            {% else %}
+                <span class="badge bg-secondary fs-6">FRA</span>
+            {% endif %}
+        </p>
+        <form method="POST">
+            {% if tilstand.pumpe %}
+                <button name="handling" value="pumpe_fra" class="btn btn-danger">Sluk pumpe</button>
+            {% else %}
+                <button name="handling" value="pumpe_til" class="btn btn-primary">Tænd pumpe</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- LED -->
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">LED-lys (Rød og Blå)</h5>
+        <p>Rød PWM: <strong>{{ tilstand.led_rod }}</strong> &nbsp;|&nbsp; Blå PWM: <strong>{{ tilstand.led_bla }}</strong></p>
+        <form method="POST">
+            <div class="row g-3 mb-3">
+                <div class="col-auto">
+                    <label class="form-label">Rød (0&ndash;100)</label>
+                    <input type="number" name="led_rod" class="form-control" min="0" max="100"
+                        value="{{ tilstand.led_rod }}" style="width:90px">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Blå (0&ndash;100)</label>
+                    <input type="number" name="led_bla" class="form-control" min="0" max="100"
+                        value="{{ tilstand.led_bla }}" style="width:90px">
+                </div>
+            </div>
+            <button name="handling" value="led_saet" class="btn btn-warning">Sæt lys</button>
+            <button name="handling" value="led_fra" class="btn btn-outline-secondary ms-2">Sluk lys</button>
+        </form>
+    </div>
+</div>
+
+<!-- Nuværende tilstand oversigt -->
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Aktuel tilstand</h5>
+        <table class="table table-sm table-bordered" style="max-width:300px">
+            <tbody>
+                <tr><td>Pumpe</td><td>{{ "TIL" if tilstand.pumpe else "FRA" }}</td></tr>
+                <tr><td>LED Rød</td><td>{{ tilstand.led_rod }}%</td></tr>
+                <tr><td>LED Blå</td><td>{{ tilstand.led_bla }}%</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
