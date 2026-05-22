@@ -7,8 +7,6 @@ PLANT_PROFILES = {
         "soil_min": 50,        # % - vand når jordfugtighed er under dette
         "soil_max": 70,        # % - stop pumpe når over dette
         "lys_timer": 15,       # timer lys per dag
-        "led_rod": 30,         # PWM 0-100
-        "led_bla": 20,
         "vaekst_dage": 30,
         "beskrivelse": "Krydderurt, elsker varme og fugt. 18-25 grader.",
     },
@@ -17,8 +15,6 @@ PLANT_PROFILES = {
         "soil_min": 50,
         "soil_max": 70,
         "lys_timer": 12,
-        "led_rod": 35,
-        "led_bla": 25,
         "vaekst_dage": 90,
         "beskrivelse": "Krydderurt, kræver lidt mindre lys. 18-24 grader.",
     },
@@ -27,8 +23,6 @@ PLANT_PROFILES = {
         "soil_min": 45,
         "soil_max": 65,
         "lys_timer": 16,
-        "led_rod": 35,
-        "led_bla": 30,
         "vaekst_dage": 80,
         "beskrivelse": "Spiselig blomst, Kræver meget vand og lys. 16-24 grader.",
     },
@@ -37,8 +31,6 @@ PLANT_PROFILES = {
         "soil_min": 55,
         "soil_max": 75,
         "lys_timer": 14,
-        "led_rod": 25,
-        "led_bla": 40,
         "vaekst_dage": 60,
         "beskrivelse": "Aromatisk krydderurt, trives i fugtig jord og moderat til kraftigt lys. 15-24 grader."
     },

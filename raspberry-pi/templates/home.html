@@ -1,80 +1,84 @@
-{% extends "layout.html" %}
-{% block title %}Oversigt{% endblock %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>GrowSense — Hjem</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include 'nav.html' ignore missing %}
 
-{% block content %}
-<h2>Dashboard &ndash; {{ profil.navn }}</h2>
-<p class="text-muted">Aktiv profil: <strong>{{ profil.navn }}</strong> &mdash; sidst opdateret: {{ data.timestamp }}</p>
+  <main class="container">
+    <h1>Sensor-monitorering</h1>
+    <p class="subtitle">Opdateres automatisk hvert 2. sekund</p>
 
-<!-- Sensorværdier i kort -->
-<div class="row g-3">
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="card-title text-muted">Jordfugtighed</div>
-                <div class="sensor-value">{{ data.soil }}%</div>
-                {% if data.soil < profil.soil_min %}
-                    <span class="badge bg-danger">For tør</span>
-                {% elif data.soil > profil.soil_max %}
-                    <span class="badge bg-warning text-dark">For våd</span>
-                {% else %}
-                    <span class="badge bg-success">OK</span>
-                {% endif %}
-            </div>
-        </div>
+    <div class="card-grid">
+      <div class="card">
+        <p class="label">Jordfugtighed — Plante 1</p>
+        <p class="value big" id="soil1-val">{{ data.soil1 }}%</p>
+      </div>
+      <div class="card">
+        <p class="label">Jordfugtighed — Plante 2</p>
+        <p class="value big" id="soil2-val">{{ data.soil2 }}%</p>
+      </div>
+      <div class="card">
+        <p class="label">Lysniveau</p>
+        <p class="value big" id="light-val">{{ data.light }}</p>
+      </div>
+      <div class="card">
+        <p class="label">Vandstand</p>
+        <p class="value big {% if data.vandstand == 'Massere af vand' %}green{% else %}red{% endif %}"
+           id="vandstand-val">{{ data.vandstand }}</p>
+        <span class="badge {% if data.vandstand == 'Massere af vand' %}badge-ok{% else %}badge-advarsel{% endif %}"
+              id="vandstand-badge">
+          {% if data.vandstand == "Massere af vand" %}Nok vand{% else %}Fyld vand!{% endif %}
+        </span>
+      </div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="card-title text-muted">Lysniveau</div>
-                <div class="sensor-value">{{ data.light }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="card-title text-muted">Pumpe</div>
-                <div class="sensor-value">
-                    {% if tilstand.pumpe %}
-                        <span class="text-primary">Til</span>
-                    {% else %}
-                        <span class="text-secondary">Fra</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="card-title text-muted">Vandstand</div>
-                <div class="sensor-value">
-                    {% if data.vandstand == "Fyld vand" %}
-                        <span class="text-danger">Lav</span>
-                        <br><span class="badge bg-danger">Fyld vand</span>
-                    {% else %}
-                        <span class="text-success">OK</span>
-                        <br><span class="badge bg-success">Nok vand</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Hurtig styring -->
-<div class="card mt-2">
-    <div class="card-body">
-        <h5 class="card-title">Hurtig styring</h5>
-        <form method="POST" action="{{ url_for('styring') }}" class="d-inline">
-            {% if tilstand.pumpe %}
-                <button name="handling" value="pumpe_fra" class="btn btn-outline-secondary">Sluk pumpe</button>
-            {% else %}
-                <button name="handling" value="pumpe_til" class="btn btn-primary">Tænd pumpe</button>
-            {% endif %}
-        </form>
-        <a href="{{ url_for('styring') }}" class="btn btn-outline-dark ms-2">Fuld styring</a>
-        <a href="{{ url_for('sensorer') }}" class="btn btn-outline-success ms-2">Se grafer</a>
+    <div class="card status-card">
+      <h2>Aktuel systemstatus</h2>
+      <table>
+        <tr><td>Pumpe</td><td id="pumpe-val">{{ data.pumpe }}</td></tr>
+        <tr><td>LED-profil</td><td id="lysprofil-val">{{ data.lysprofil | capitalize }}</td></tr>
+        <tr><td>LED-styrke</td><td id="led-val">{{ data.led }}%</td></tr>
+        <tr><td>Sidst opdateret</td><td id="ts-val">{{ data.timestamp }}</td></tr>
+      </table>
     </div>
-</div>
-{% endblock %}
+
+    <div class="card">
+      <h2>Hurtig styring</h2>
+      <form method="POST" action="/styring" style="display:inline">
+        <button name="handling" value="pumpe_til" class="btn btn-primary">Tænd pumpe</button>
+        <button name="handling" value="pumpe_fra" class="btn btn-outline">Sluk pumpe</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    setInterval(() => {
+      fetch('/api/data')
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('soil1-val').textContent    = d.soil1 + '%';
+          document.getElementById('soil2-val').textContent    = d.soil2 + '%';
+          document.getElementById('light-val').textContent    = d.light;
+          document.getElementById('vandstand-val').textContent = d.vandstand;
+          document.getElementById('pumpe-val').textContent    = d.pumpe;
+          document.getElementById('lysprofil-val').textContent = d.lysprofil.charAt(0).toUpperCase() + d.lysprofil.slice(1);
+          document.getElementById('led-val').textContent      = d.led + '%';
+          document.getElementById('ts-val').textContent       = d.timestamp;
+
+          const badge = document.getElementById('vandstand-badge');
+          if (d.vandstand === 'Massere af vand') {
+            badge.textContent = 'Nok vand';
+            badge.className = 'badge badge-ok';
+          } else {
+            badge.textContent = 'Fyld vand!';
+            badge.className = 'badge badge-advarsel';
+          }
+        });
+    }, 2000);
+  </script>
+</body>
+</html>

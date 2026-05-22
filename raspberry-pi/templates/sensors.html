@@ -1,71 +1,74 @@
-{% extends "layout.html" %}
-{% block title %}Sensorer{% endblock %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>GrowSense — Sensorer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include 'nav.html' ignore missing %}
 
-{% block content %}
-<h2>Sensor-monitorering</h2>
+  <main class="container">
+    <h1>Sensoroverblik</h1>
 
-<!-- Live værdier -->
-<div class="row g-3 mb-3">
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="text-muted">Jordfugtighed</div>
-                <div class="sensor-value">{{ data.soil }}%</div>
-            </div>
-        </div>
+    <div class="card-grid">
+      <div class="card">
+        <p class="label">Jordfugtighed — Plante 1</p>
+        <p class="value big">{{ data.soil1 }}%</p>
+      </div>
+      <div class="card">
+        <p class="label">Jordfugtighed — Plante 2</p>
+        <p class="value big">{{ data.soil2 }}%</p>
+      </div>
+      <div class="card">
+        <p class="label">Lysniveau</p>
+        <p class="value big">{{ data.light }}</p>
+      </div>
+      <div class="card">
+        <p class="label">Vandstand</p>
+        <p class="value big">{{ data.vandstand }}</p>
+      </div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="text-muted">Lysniveau</div>
-                <div class="sensor-value">{{ data.light }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card text-center h-100">
-            <div class="card-body">
-                <div class="text-muted">Vandstand</div>
-                <div class="sensor-value">
-                    {% if data.vandstand == "Fyld vand" %}
-                        <span class="text-danger">Lav</span>
-                        <br><span class="badge bg-danger">Fyld vand</span>
-                    {% else %}
-                        <span class="text-success">OK</span>
-                        <br><span class="badge bg-success">Nok vand</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 d-flex align-items-center justify-content-center">
-        <a href="{{ url_for('sensorer') }}" class="btn btn-outline-success">Opdater</a>
-    </div>
-</div>
 
-<!-- Grafer -->
-{% if grafer %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">Jordfugtighed over tid</h5>
-            <img src="data:image/png;base64,{{ grafer.soil }}" class="img-fluid" alt="Jordfugtighed graf">
-        </div>
-    </div>
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">Lysniveau over tid</h5>
-            <img src="data:image/png;base64,{{ grafer.light }}" class="img-fluid" alt="Lysniveau graf">
-        </div>
-    </div>
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">Vandstand over tid</h5>
-            <img src="data:image/png;base64,{{ grafer.vandstand }}" class="img-fluid" alt="Vandstand graf">
-        </div>
-    </div>
-{% else %}
-    <div class="alert alert-info">
-        Ingen historik endnu &ndash; data gemmes til CSV hvert 10. måling fra ESP32.
-    </div>
-{% endif %}
-{% endblock %}
+    <form method="GET">
+      <button class="btn btn-outline" type="submit">Opdater</button>
+    </form>
+
+    <section>
+      <h2>Jordfugtighed — Plante 1 over tid</h2>
+      {% if grafer.soil1 %}
+        <img src="data:image/png;base64,{{ grafer.soil1 }}" style="width:100%">
+      {% else %}
+        <p>Ingen data endnu.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Jordfugtighed — Plante 2 over tid</h2>
+      {% if grafer.soil2 %}
+        <img src="data:image/png;base64,{{ grafer.soil2 }}" style="width:100%">
+      {% else %}
+        <p>Ingen data endnu.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Lysniveau over tid</h2>
+      {% if grafer.light %}
+        <img src="data:image/png;base64,{{ grafer.light }}" style="width:100%">
+      {% else %}
+        <p>Ingen data endnu.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Vandstand over tid</h2>
+      {% if grafer.vandstand %}
+        <img src="data:image/png;base64,{{ grafer.vandstand }}" style="width:100%">
+      {% else %}
+        <p>Ingen data endnu.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
