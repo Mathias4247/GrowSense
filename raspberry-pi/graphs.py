@@ -98,6 +98,6 @@ def lav_alle_grafer(raekker):
     return {
         "soil1":     _lav_linje_graf(tider, soil1_vals, "Jordfugtighed — Plante 1", "Fugtighed %",      "#2E7D32", ymax=100),
         "soil2":     _lav_linje_graf(tider, soil2_vals, "Jordfugtighed — Plante 2", "Fugtighed %",      "#1565C0", ymax=100),
-        "light":     _lav_linje_graf(tider, light_vals, "Lysintensitet over tid",   "Lysintensitet %",  "#F9A825", ymax=100),
+        "light":     _lav_linje_graf(tider, light_vals, "Sollys over tid (%)",   "Lysintensitet %",  "#F9A825", ymax=100),
         "vandstand": _lav_vandstand_graf(tider, vand_vals),
     }

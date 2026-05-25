@@ -12,7 +12,7 @@ PLANT_PROFILES = {
     },
     "persille": {
         "navn": "Persille",
-        "soil_min": 50,
+        "soil_min": 45,
         "soil_max": 70,
         "lys_timer": 12,
         "vaekst_dage": 90,

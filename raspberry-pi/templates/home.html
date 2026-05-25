@@ -32,15 +32,15 @@
     <div class="col-md-3 col-sm-6">
         <div class="card text-center h-100">
             <div class="card-body">
-                <div class="card-title text-muted">Lysniveau</div>
-                <div class="sensor-value" id="light-val">{{ data.light }}</div>
+                <div class="card-title text-muted">Sollys</div>
+                <div class="sensor-value" id="light-val">{{ data.light }}%</div>
             </div>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="card text-center h-100">
             <div class="card-body">
-                <div class="card-title text-muted">Pumpe</div>
+                <div class="card-title text-muted">Vand pumpe</div>
                 <div class="sensor-value" id="pumpe-val">{{ data.pumpe }}</div>
             </div>
         </div>
@@ -95,7 +95,7 @@
             .then(d => {
                 document.getElementById("soil1-val").textContent = d.soil1 + "%";
                 document.getElementById("soil2-val").textContent = d.soil2 + "%";
-                document.getElementById("light-val").textContent = d.light;
+                document.getElementById("light-val").textContent = d.light + "%";
                 document.getElementById("pumpe-val").textContent = d.pumpe;
                 document.getElementById("vandstand-val").textContent = d.vandstand;
                 document.getElementById("ts-val").textContent = d.timestamp;

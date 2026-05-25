@@ -1,7 +1,7 @@
 import sensor_reader
 
 _tilstand = {
-    "pumpe":    False,
+    "pumpe":     False,
     "lysprofil": "standard",
     "soil_min":  50,
     "soil_max":  70,
@@ -14,7 +14,7 @@ def set_pumpe(state: bool):
 
 
 def set_profil(soil_min: int, soil_max: int, lysprofil: str = "standard"):
-    """Sender profilgrænser + lysprofil til ESP32."""
+    """Sender profilens fugt-grænser + lysprofil til ESP32."""
     _tilstand["soil_min"]  = soil_min
     _tilstand["soil_max"]  = soil_max
     _tilstand["lysprofil"] = lysprofil
@@ -27,6 +27,11 @@ def set_lysprofil(navn: str):
     if navn in ("seedling", "standard"):
         _tilstand["lysprofil"] = navn
         sensor_reader.send("indstil:lysprofil={}".format(navn))
+
+
+def set_lys_tilladt(state: bool):
+    """Fortæller ESP32 om lyset må være tændt lige nu (tidsvindue)."""
+    sensor_reader.send("indstil:lys={}".format("TIL" if state else "FRA"))
 
 
 def get_tilstand() -> dict:

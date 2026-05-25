@@ -2,18 +2,32 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sensor_reader, actuators, graphs, camera
 from profiles import PLANT_PROFILES
 import schedule, threading, time
+from datetime import datetime
 from camera import tag_billede_og_analyser
 
 app = Flask(__name__)
 sensor_reader.start()
 aktiv_profil_key = "basilikum"
 
-def _send_opstart_profil():
-    time.sleep(3)  # vent til serial er klar
-    p = PLANT_PROFILES[aktiv_profil_key]
-    actuators.set_profil(p["soil_min"], p["soil_max"])
+LIGHT_START_HOUR = 6   # LED'erne må tænde fra kl. 06:00
 
-threading.Thread(target=_send_opstart_profil, daemon=True).start()
+
+def _lys_skema_loop():
+    """Sender hvert minut om lyset må være tændt (06:00 -> 06 + profilens timer)."""
+    time.sleep(3)  # vent til serial er klar
+    while True:
+        profil = PLANT_PROFILES[aktiv_profil_key]
+        timer = profil.get("lys_timer", 14)
+        nu = datetime.now()
+        time_nu = nu.hour + nu.minute / 60
+        tilladt = LIGHT_START_HOUR <= time_nu < LIGHT_START_HOUR + timer
+        actuators.set_lys_tilladt(tilladt)
+        # Send også profilens fugt-grænser så ESP'en altid er opdateret
+        actuators.set_profil(profil["soil_min"], profil["soil_max"])
+        time.sleep(60)
+
+threading.Thread(target=_lys_skema_loop, daemon=True).start()
+
 
 def automatisk_analyse():
     print("Automatisk analyse køres...")
@@ -27,6 +41,7 @@ def scheduler_interval():
         time.sleep(max(1, schedule.idle_seconds()))
 
 threading.Thread(target=scheduler_interval, daemon=True).start()
+
 
 @app.route("/")
 def hjem():
@@ -75,7 +90,7 @@ def profiler():
             actuators.set_profil(
                 profil["soil_min"],
                 profil["soil_max"],
-                profil.get("lysprofil", "standard")
+                profil.get("lysprofil", "standard"),
             )
         return redirect(url_for("profiler"))
     return render_template("profiles.html", profiler=PLANT_PROFILES, aktiv=aktiv_profil_key)
