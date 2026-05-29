@@ -11,7 +11,7 @@ except Exception:
 
 try:
     from ultralytics import YOLO
-    _model = YOLO("/home/gruppe5/best_ncnn_model", task="classify")   # præ-trænet model på Pi
+    _model = YOLO("/home/gruppe5/best_ncnn_model", task="classify")   
     _yolo_ok = True
 except Exception:
     _yolo_ok = False
@@ -20,7 +20,7 @@ except Exception:
 IMG_MAPPE = "static/img"
 os.makedirs(IMG_MAPPE, exist_ok=True)
 
-# Gemmer seneste kamera-resultat i hukommelsen
+
 seneste_resultat = {
     "billede":    None,
     "sundhed":    None,
@@ -45,10 +45,10 @@ def tag_billede_og_analyser() -> dict:
         picam.capture_file(sti)
         picam.close()
     else:
-        # Ingen Pi-kamera - brug placeholder
+        
         filnavn = None
 
-    # YOLOv8 analyse
+    
     labels = []
     sundhed = "Ukendt"
     if _yolo_ok and filnavn:

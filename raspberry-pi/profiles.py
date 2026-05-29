@@ -1,12 +1,12 @@
-# Planteprofiler som simple Python-dictionaries.
-# Tilføj eller ret profiler her - resten af systemet henter dem automatisk.
+
+
 
 PLANT_PROFILES = {
     "basilikum": {
         "navn": "Basilikum",
-        "soil_min": 50,        # % - vand når jordfugtighed er under dette
-        "soil_max": 70,        # % - stop pumpe når over dette
-        "lys_timer": 15,       # timer lys per dag
+        "soil_min": 50,        
+        "soil_max": 70,        
+        "lys_timer": 15,       
         "vaekst_dage": 30,
         "beskrivelse": "Krydderurt, elsker varme og fugt. 18-25 grader.",
     },

@@ -9,12 +9,12 @@ app = Flask(__name__)
 sensor_reader.start()
 aktiv_profil_key = "basilikum"
 
-LIGHT_START_HOUR = 6   # LED'erne må tænde fra kl. 06:00
+LIGHT_START_HOUR = 6  
 
 
 def _lys_skema_loop():
     """Sender hvert minut om lyset må være tændt (06:00 -> 06 + profilens timer)."""
-    time.sleep(3)  # vent til serial er klar
+    time.sleep(3)  
     while True:
         profil = PLANT_PROFILES[aktiv_profil_key]
         timer = profil.get("lys_timer", 14)
@@ -22,7 +22,7 @@ def _lys_skema_loop():
         time_nu = nu.hour + nu.minute / 60
         tilladt = LIGHT_START_HOUR <= time_nu < LIGHT_START_HOUR + timer
         actuators.set_lys_tilladt(tilladt)
-        # Send også profilens fugt-grænser så ESP'en altid er opdateret
+        
         actuators.set_profil(profil["soil_min"], profil["soil_max"])
         time.sleep(60)
 
