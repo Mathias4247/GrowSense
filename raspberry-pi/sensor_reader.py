@@ -62,11 +62,12 @@ def _laes_serial():
                     elif key == "led":       sensor_data["led"] = int(float(val))
                 sensor_data["timestamp"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 _gem_til_csv(sensor_data.copy())
-            except Exception:
+            except Exception:   
                 pass
     except Exception as e:
         print(f"Serial fejl: {e}")
-
+#i stedet for denne exception setup så specificer hvad de skal excepte. eks. "except ValueError". Derefter print så man kan se fejlen. Begge except er lidt clunky sat op på linje 65+67.
+#lige nu bruges Exception så bare er Exception af alle fejl der kunne være. stadig forholdsvist funktionelt pga. indrykningen. Altså en indre(65) og ydre except(67).
 def send(besked: str):
     if _ser is not None:
         try:
